@@ -1,0 +1,52 @@
+class BookList {
+  
+  constructor() {
+    this.readBook = 0;
+    this.notReadBook = 0;
+    this.nextBook = {};
+    this.currentBook = {};
+    this.lastBook = {};
+    this.allBooks = [];
+  }
+
+  add(newBook) {
+    this.allBooks = [...this.allBooks, newBook];
+    this.currentBook = this.allBooks.find((current) => current.read === false);
+    this._attNotReadBooks();
+  }
+
+  _attNotReadBooks() {
+    this.notReadBook = this.allBooks.reduce((acc, curr) => {
+      !curr.read ? (acc += 1) : acc;
+      return acc;
+    }, 0);
+  }
+
+  finishCurrentBook() {
+    if (this.currentBook) {
+      this.currentBook.read = true;
+      this.currentBook.readDate = new Date(Date.now());
+      let next = this.allBooks.filter((current) => !current.read);
+      this.nextBook = next[1];
+      this.lastBook = this.currentBook;
+      this.currentBook = next[0];
+      this.readBook = this.allBooks.reduce((acc, curr) => {
+        curr.read ? (acc += 1) : acc;
+        return acc;
+      }, 0);
+      this._attNotReadBooks();
+    } else {
+      return "book list is over";
+    }
+  }
+}
+
+class Book {
+  constructor(title, genre, author, read, readDate) {
+    this.title = title;
+    this.genre = genre;
+    this.author = author;
+    this.read = read;
+    this.readDate = this.read ? new Date(Date.now()) : "";
+  }
+}
